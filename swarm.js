@@ -2,7 +2,7 @@
 var canvas = document.getElementById('swarmcanvas');
 var critterarr = new Array();
 function init_critters(){
-	for(var i = 0; i<50; i++){
+	for(var i = 0; i<25; i++){
 		var critter = new Critter(Math.floor(Math.random()*1000),Math.floor(Math.random()*1000),500);
 		critterarr.push(critter);
 		var intervalTimer = setInterval(function(){loop()}, 100);
@@ -59,21 +59,27 @@ function Critter(x,y,distance){
 	}
 
 	var head_towards = function(){
-		var going  = upright;
-		if(going.length < upleft.length){
-			going = upleft;
+		var all_sides = new Array();
+		
+		if(!upleft.length<downleft.length || !upleft.length<upright.length  || !upleft.length<downright.length ){
+			all_sides.push(upleft);
 		}
-		if(going.length<downleft.length){
-			going = downleft
+		if(!upright.length<downleft.length  || !upright.length<upleft.length  || !upright.length<downright.length ){
+			all_sides.push(upright);
 		}
-		if(going.length<downright.length){
-			going = downright;
+		if(!downleft.length<upright.length  || !downleft.length<upleft.length  || !downleft.length<downright.length ){
+			all_sides.push(downleft);
 		}
+		if(!downright.length<upright.length  || !downright.length<upleft.length  || !downright.length<downleft.length ){
+			all_sides.push(downright);
+		}
+		console.log(all_sides);
+		var going =  all_sides[Math.floor(Math.random()*all_sides.length)];
 		upleft = [];
 		downleft = [];
 		upright = [];
 		downright = [];
-
+		console.log(going);
 		var random = Math.floor(Math.random()*going.length);
 		var specific_critter = going[random];
 
@@ -83,22 +89,28 @@ function Critter(x,y,distance){
 	var move_calc = function(go_to_area,thisx,thisy){
 
 		if(go_to_area != null){
-			var abs_x_dif = Math.abs(thisx,go_to_area.x);
-			var abs_y_dif = Math.abs(thisy,go_to_area.y);
+			var abs_x_dif = Math.abs(thisx-go_to_area.x);
+			var abs_y_dif = Math.abs(thisy-go_to_area.y);
 
 			var abs_total_dif = abs_x_dif+abs_y_dif;
 
 			var change_x = (abs_x_dif/abs_total_dif)*5;
 			var change_y = (abs_y_dif/abs_total_dif)*5;
 
-			if(thisx-go_to_area.x < 0){
+			if(thisx-go_to_area.x > 0){
 				change_x *= -1;
 			}
-			if(thisy-go_to_area.y < 0){
+			if(thisy-go_to_area.y > 0){
 				change_y *= -1;
 			}
-
-
+			
+			if(going_to_x+change_x>=1000 || going_to_x+change_x<=-1 ){
+				change_x *= -1;
+			}
+			if(going_to_y+change_y>=1000 || going_to_y+change_y<=-1 ){
+				change_y *= -1;
+			}
+			
 			going_to_x += change_x;
 			going_to_y += change_y;
 		}
