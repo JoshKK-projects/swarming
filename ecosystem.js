@@ -13,7 +13,7 @@ var worldTime = 0;
 //plant variables
 var energyToDropSeed = 300;//needed to start dropping seeds
 var energySpentOnSeed = 300;//energy depleted on dropping a seed
-var seedDropRange = 100;//twice how far it can try to drop in any direction
+var seedDropRange = 400;//twice how far it can try to drop in any direction
 
 //sub array referenced to draw to canvas
 var subSystem = new Array();
@@ -39,14 +39,15 @@ var allAnimals = new Array();
 //action loop
 function action_loop(){
 	//wipe the canvas
-	canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-	//plants go first, they can be in one loop since if both try to seed the same place, it doesnt actualy matter which one succeeds
 	for (var plant in allPlants){
 		allPlants[plant].synthesize();
 		allPlants[plant].grow();
+	}
+	canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+	//plants go first, they can be in one loop since if both try to seed the same place, it doesnt actualy matter which one succeeds
+	for (var plant in allPlants){
 		allPlants[plant].draw();
 	}
-
 	worldTime++;
 } 
 
