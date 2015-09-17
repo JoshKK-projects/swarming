@@ -10,6 +10,10 @@ var intervalTime = 40;//ms
 var canvas = document.getElementById('ecocanvas');
 //age of world in loop cycles
 var worldTime = 0; 
+//current living plants
+var livingPlants = 0;
+//Max plants allowed alive
+var maxLivingPlants = 0; //NOT IMPLEMENTED
 //plant variables
 var energyToDropSeed = 300;//needed to start dropping seeds
 var energySpentOnSeed = 300;//energy depleted on dropping a seed
@@ -20,7 +24,7 @@ var subSystem = new Array();
 for(var i = 0; i<1000; i++){
 	var subArray = new Array();
 	for(var a = 0; a < 1000; a++){
-		subArray[a] = 0;
+		subArray[a] = new Dirt();;
 	}
 	subSystem.push(subArray);
 }
@@ -50,9 +54,21 @@ function action_loop(){
 	}
 	worldTime++;
 } 
+//On hold
+// function Herbivore(x,y){
+// 	this.energy = 1000;//depletes
+// 	this.x = Math.floor(x);//coordinates
+// 	this.y = Math.floor(y);
+// 	this.speed = (Math.floor()*3)+1//animal run speed
+
+// 	this.gather = function(){
+
+// 	}
+// }
 
 function Plant(x,y){
 
+	this.type = 'Plant';//Type, should probs prototype this out somehow later
 	this.energy = 0;//used to grow
 	this.x = Math.floor(x); //coordinates
 	this.y = Math.floor(y);
@@ -70,9 +86,11 @@ function Plant(x,y){
 			if(canGrow>=energyToDropSeed-1){//tries to drop a see near it
 				var dropSeedX = Math.floor((Math.random()*seedDropRange)-(seedDropRange/2));
 				var dropSeedY = Math.floor((Math.random()*seedDropRange)-(seedDropRange/2));
-				if(subSystem[this.x+dropSeedX][this.y+dropSeedY] != 1 && subSystem[this.x+dropSeedX][this.y+dropSeedY] != 9 && this.x+dropSeedX <= 999 && this.x+dropSeedX >= 0 && this.y+dropSeedY <= 999 && this.y+dropSeedY >= 0 ){//will drop seed if no plan tin current area
+				if(in_bounds(this.x,this.y,dropSeedX,dropSeedY) && seed_take_root(this.x,this.y,dropSeedX,dropSeedY)){//will drop seed if no plant in current area
 					allPlants.push(new Plant(this.x+dropSeedX,this.y+dropSeedY));
-					subSystem[this.x+dropSeedX][this.y+dropSeedY] = 1;
+					console.log(this);
+					subSystem[this.x+dropSeedX][this.y+dropSeedY] = this;
+					livingPlants++;
 				}
 				this.energy-=energySpentOnSeed;//spends some energy dropping the seed
 			}
@@ -84,8 +102,29 @@ function Plant(x,y){
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,5,0,2*Math.PI);
 		ctx.fillStyle = 'green';
+		ctx.fill();
 		ctx.strokeStyle = 'green';
 		ctx.stroke();
 	}
 
+}
+//specific if plant can grow rules
+function seed_take_root(initx,inity,addedx,addedy){
+	if(subSystem[initx+addedx][inity+addedy].type != 'Dirt'){
+		return false;
+	}
+	return true;
+}
+
+//helper function to tell if something is in bounds
+function in_bounds(initx,inity,addedx,addedy){
+	if(initx+addedx < 0 || initx+addedx > 999 || inity+addedy < 0 || inity+addedy > 999){
+		return false;
+	}
+	return true;
+}
+//Dirt, plants can grow in it
+function Dirt(){
+	this.type = 'Dirt';
+	//add plant nutrients sometime, affect distribution of plants
 }
