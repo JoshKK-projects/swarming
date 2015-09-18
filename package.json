@@ -1,0 +1,19 @@
+{
+  "name": "swarming",
+  "version": "0.0.0",
+  "description": "crittters stuff",
+  "main": "ecosystem.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JoshKK-projects/swarming.git"
+  },
+  "author": "kk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoshKK-projects/swarming/issues"
+  },
+  "homepage": "https://github.com/JoshKK-projects/swarming"
+}
